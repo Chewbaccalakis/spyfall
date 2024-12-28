@@ -1,5 +1,5 @@
-import { withTranslation } from "../utils/i18n";
 import Router from "next/router";
+import { useI18n } from "../locales";
 
 import { logEvent } from "../utils/analytics";
 
@@ -8,7 +8,7 @@ import ThanksForPlaying from "./ThanksForPlaying";
 import AccessCode from "./AccessCode";
 import HideableContainer from "./HideableContainer";
 
-const Lobby = ({ t, gameState, socket }) => {
+const Lobby = ({ gameState, socket, isRocketcrab }) => {
 	const playerList = gameState.players.map((player) => ({
 		...player,
 		isMe: player.name === gameState.me.name,
@@ -21,11 +21,13 @@ const Lobby = ({ t, gameState, socket }) => {
 		logEvent("lobby-timeLimit", gameState.settings.timeLimit);
 	};
 
+	const t = useI18n();
+
 	return (
 		<>
-			<h4>{t("ui.waiting for players")}</h4>
+			<h4>{t("ui.welcome to spyfall")}</h4>
 
-			<AccessCode code={gameState.code} />
+			{!isRocketcrab && <AccessCode code={gameState.code} />}
 
 			<hr />
 
@@ -35,7 +37,7 @@ const Lobby = ({ t, gameState, socket }) => {
 						{player.name}
 						{!player.name && <i>Joining...</i>}
 
-						{player.isMe && (
+						{player.isMe && !isRocketcrab && (
 							<a
 								href="#"
 								className="btn-edit-player"
@@ -71,21 +73,23 @@ const Lobby = ({ t, gameState, socket }) => {
 				>
 					{t("ui.start game")}
 				</button>
-				<button
-					className="btn-leave"
-					onClick={() => {
-						//prevents a redirect back to /[gameCode]
-						socket.off("disconnect");
+				{!isRocketcrab && (
+					<button
+						className="btn-leave"
+						onClick={() => {
+							//prevents a redirect back to /[gameCode]
+							socket.off("disconnect");
 
-						Router.push("/");
-					}}
-				>
-					{t("ui.leave game")}
-				</button>
+							Router.push("/");
+						}}
+					>
+						{t("ui.leave game")}
+					</button>
+				)}
 			</div>
 			{gameState.currentRoundNum > 1 && <ThanksForPlaying />}
 		</>
 	);
 };
 
-export default withTranslation("common")(Lobby);
+export default Lobby;

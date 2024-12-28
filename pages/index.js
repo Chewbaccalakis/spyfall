@@ -1,20 +1,28 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useI18n } from "../locales";
 import BuyMe from "../components/BuyMe";
 
-import { withTranslation } from "../utils/i18n";
 import Loading from "../components/Loading";
 import Swal from "sweetalert2";
 import { lockedMessage } from "../utils/misc";
-import AddAppButton from "../components/AddAppButton";
 
-const Home = ({ t, i18n, loading }) => {
+const isSpyfallTK = () =>
+	window.location.href.startsWith("https://spyfall.tannerkrewson.com");
+
+const Home = ({ loading }) => {
 	const router = useRouter();
 	const [newGameLoading, setNewGameLoading] = useState(false);
+	const t = useI18n();
 	const onNewGame = async (e) => {
 		e.preventDefault();
 		setNewGameLoading(true);
+
+		if (isSpyfallTK()) {
+			router.push("https://rocketcrab.com/transfer/tk-spyfall");
+			return;
+		}
 
 		try {
 			const res = await fetch(window.location.origin + "/new", {
@@ -61,29 +69,25 @@ const Home = ({ t, i18n, loading }) => {
 			{(loading || newGameLoading) && <Loading />}
 			{!loading && (
 				<>
-					<p>
-						The "no game was found" issue is fixed now! 🎉 Sorry about that 😭
-					</p>
 					<div className="button-container">
-						<Link href="/join">
+						<Link
+							href={isSpyfallTK() ? "https://rocketcrab.com/join" : "/join"}
+						>
 							<button id="btn-join-game" className="btn-large">
 								{t("ui.join game")}
 							</button>
 						</Link>
-						<button id="btn-new-game" onClick={onNewGame} className="btn-large">
+						<button id="btn-new-game" className="btn-large" onClick={onNewGame}>
 							{t("ui.new game")}
 						</button>
 					</div>
+					<p>Powered by 🚀🦀</p>
 					<div className="button-container-vertical">
-						<AddAppButton />
-						<Link href="/how-to-play">
-							<button className="btn-small btn-vertical">How to Play</button>
-						</Link>
-						<Link href="/more-games">
-							<button className="btn-small btn-vertical">
-								Games Like Spyfall
-							</button>
-						</Link>
+						<div style={{ width: "100%" }}>
+							<Link href="/how-to-play">
+								<button className="btn-small btn-vertical">How to Play</button>
+							</Link>
+						</div>
 						<a
 							href="https://github.com/tannerkrewson/spyfall/blob/dev/README.md#history"
 							target="_blank"
@@ -112,4 +116,4 @@ const Home = ({ t, i18n, loading }) => {
 	);
 };
 
-export default withTranslation("common")(Home);
+export default Home;

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Router from "next/router";
-import { withTranslation } from "../utils/i18n";
 import Swal from "sweetalert2";
 
 import StrikeableBox from "./StrikeableBox";
 import { logEvent } from "../utils/analytics";
 import AccessCode from "./AccessCode";
 import HideableContainer from "./HideableContainer";
+import { useCurrentLocale, useI18n } from "../locales";
 
-const InGame = ({ t, i18n, gameState, socket }) => {
+const InGame = ({ gameState, socket, isRocketcrab }) => {
 	const {
 		me,
 		location,
@@ -20,10 +20,12 @@ const InGame = ({ t, i18n, gameState, socket }) => {
 	} = gameState;
 
 	const [timeLeft, setTimeLeft] = useState(latestServerTimeLeft);
+	const t = useI18n();
+	const lang = useCurrentLocale();
 
 	useEffect(() => {
 		logEvent("player-roundCount", gameState.currentRoundNum + 1);
-		logEvent("player-language", i18n.language);
+		logEvent("player-language", lang);
 	}, []);
 
 	useEffect(() => {
@@ -84,7 +86,7 @@ const InGame = ({ t, i18n, gameState, socket }) => {
 				</div>
 			)}
 
-			<AccessCode code={gameState.code} />
+			{!isRocketcrab && <AccessCode code={gameState.code} />}
 
 			<HideableContainer title={"Your Role"} initialHidden={false}>
 				<div className="status-container-content">
@@ -160,19 +162,21 @@ const InGame = ({ t, i18n, gameState, socket }) => {
 				>
 					{t("ui.end game")}
 				</button>
-				<button
-					className="btn-leave"
-					onClick={() =>
-						popup(t("ui.leave game"), t("ui.back"), () => {
-							//prevents a redirect back to /[gameCode]
-							socket.off("disconnect");
+				{!isRocketcrab && (
+					<button
+						className="btn-leave"
+						onClick={() =>
+							popup(t("ui.leave game"), t("ui.back"), () => {
+								//prevents a redirect back to /[gameCode]
+								socket.off("disconnect");
 
-							Router.push("/");
-						})
-					}
-				>
-					{t("ui.leave game")}
-				</button>
+								Router.push("/");
+							})
+						}
+					>
+						{t("ui.leave game")}
+					</button>
+				)}
 			</div>
 		</div>
 	);
@@ -191,4 +195,4 @@ const popup = (yesText, noText, onYes) =>
 		}
 	});
 
-export default withTranslation("common")(InGame);
+export default InGame;

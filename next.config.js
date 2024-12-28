@@ -1,12 +1,9 @@
-const withCSS = require("@zeit/next-css");
-const withLess = require("@zeit/next-less");
-const withPWA = require("next-pwa");
-module.exports = withCSS(
-	withLess(
-		withPWA({
-			pwa: {
-				dest: "public",
-			},
-		})
-	)
-);
+const allLanguages = require("./locales/_all_languages.json");
+const allLangCodes = Object.keys(allLanguages);
+
+module.exports = {
+	i18n: {
+		defaultLocale: "en",
+		locales: allLangCodes,
+	},
+};
