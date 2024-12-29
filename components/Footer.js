@@ -4,6 +4,15 @@ const Footer = () => (
 	<div className="footer">
 		Spyfall by{" "}
 		<a
+			href="https://github.com/Chewbaccalakis"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			Nikolas Trochalakis
+		</a>
+		<br />
+		Forked from Spyfall by{" "}
+		<a
 			href="https://www.tannerkrewson.com/"
 			target="_blank"
 			rel="noopener noreferrer"
@@ -12,11 +21,19 @@ const Footer = () => (
 		</a>
 		<br />
 		<a
+			href="https://github.com/Chewbaccalakis/spyfall"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			View Fork on GitHub
+		</a>
+		<br />
+		<a
 			href="https://github.com/tannerkrewson/spyfall"
 			target="_blank"
 			rel="noopener noreferrer"
 		>
-			View on GitHub
+			View Original on GitHub
 		</a>
 	</div>
 );

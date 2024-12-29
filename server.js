@@ -24,4 +24,5 @@ const nextHandler = nextApp.getRequestHandler();
 
 	await http.listen(port);
 	console.log(`> Ready on http://localhost:${port}`); // eslint-disable-line no-console
+	console.log(`> App Launched`); // eslint-disable-line no-console
 })();
