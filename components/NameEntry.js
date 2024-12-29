@@ -23,10 +23,7 @@ const NameEntry = ({ onNameEntry, gameCode, socket }) => {
 
 	const handleBack = (e) => {
 		e.preventDefault();
-
-		//prevents a redirect back to /[gameCode]
-		socket.off("disconnect");
-
+		socket.off();
 		Router.push("/");
 	};
 

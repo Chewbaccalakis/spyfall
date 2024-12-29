@@ -86,6 +86,7 @@ const Game = ({ loading }) => {
 		socket.emit("name", name);
 		setCookie(null, "previousGameCode", gameCode);
 		setCookie(null, "previousName", name);
+		console.log("Name Set:", name);
 	};
 
 	const { status, me } = gameState;
